@@ -1,4 +1,4 @@
-﻿using CustomHttpServer.Framework.Handlers;
+using CustomHttpServer.Framework.Handlers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +10,11 @@ namespace MyHttpServer.frameworks.Новая_папка
 {
     internal class StaticFileHandler : Handler
     {
+        private readonly MyHttpServer.frameworks.Authentication.IUserSessionService _sessionService;
+        public StaticFileHandler(MyHttpServer.frameworks.Authentication.IUserSessionService sessionService = null)
+        {
+            _sessionService = sessionService;
+        }
         public override async Task HandleRequest(HttpListenerContext context)
         {
             var request = context.Request;
@@ -19,6 +24,24 @@ namespace MyHttpServer.frameworks.Новая_папка
             if (string.IsNullOrEmpty(path) || path == "/" || path == "/main/")
             {
                 path = "/main.html";
+            }
+
+            // защита админ-страниц статикой: требуем авторизацию
+            if (_sessionService != null)
+            {
+                string lowerPath = path.ToLowerInvariant();
+                bool isProtected = lowerPath == "/cards.html" || lowerPath == "/add-card.html" || lowerPath == "/edit-card.html";
+                if (isProtected)
+                {
+                    string sess = context.Request.Cookies["sessionId"]?.Value;
+                    if (_sessionService.GetUserId(sess) == null)
+                    {
+                        context.Response.StatusCode = 302;
+                        context.Response.Redirect("/auth/login");
+                        context.Response.Close();
+                        return;
+                    }
+                }
             }
 
             bool isFile = path.Contains(".");

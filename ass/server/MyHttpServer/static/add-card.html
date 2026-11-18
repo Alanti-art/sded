@@ -91,7 +91,7 @@
   <div class="page">
     <div class="header">
       <a class="logo" href="/">♛ Переворот</a>
-      <div class="navigation"><a href="/admin/cards">К карточкам</a></div>
+      <div class="navigation"><a href="/cards.html">К карточкам</a><a href="#" id="logout-link" class="login-link">Выйти</a></div>
     </div>
 
     <div class="container">
@@ -124,11 +124,39 @@
         <textarea id="note" name="Note"></textarea>
 
         <button class="btn" type="submit">Сохранить карточку</button>
-        <a class="back" href="/admin/cards">Отмена</a>
+        <a class="back" href="/cards.html">Отмена</a>
       </form>
     </div>
 
     <div class="footer">♛ Админ-панель игры «Переворот»</div>
   </div>
+
+<script>
+(function(){
+  async function check(){
+    try{
+      const r = await fetch('/auth/status', {credentials:'same-origin'});
+      const j = await r.json();
+      const isAuth = j.IsAuthenticated ?? j.isAuthenticated ?? false;
+      if(!isAuth){
+        location.href='/auth/login';
+        return;
+      }
+      const logout = document.getElementById('logout-link');
+      if(logout){
+        logout.onclick = async (e)=>{
+          e.preventDefault();
+          await fetch('/auth/logout', {method:'POST', credentials:'same-origin'});
+          document.cookie='sessionId=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0';
+          location.href='/';
+        };
+      }
+    }catch(e){}
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', check);
+  else check();
+})();
+</script>
+
 </body>
 </html>

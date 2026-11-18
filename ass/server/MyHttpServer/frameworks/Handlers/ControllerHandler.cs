@@ -1,4 +1,4 @@
-﻿using CustomHttpServer.Framework.Attributes;
+using CustomHttpServer.Framework.Attributes;
 using CustomHttpServer.Framework.Handlers;
 using MyHttpServer.frameworks.Authentication;
 using MyHttpServer.frameworks.HttpResponses;
@@ -127,7 +127,7 @@ namespace MyHttpServer.frameworks.Handlers
 
 
 
-                Dictionary<string, string> form = new Dictionary<string, string>();
+                Dictionary<string, string> form = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                 if (request.HttpMethod == "POST")
                 {
                     StreamReader reader = new StreamReader(request.InputStream, Encoding.UTF8);

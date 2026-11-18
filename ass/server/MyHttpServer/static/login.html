@@ -101,22 +101,58 @@
       <a class="logo" href="/">♛ Переворот</a>
     </div>
 
-    <form class="login-box" action="/admin/login" method="post">
+    <form class="login-box" id="loginForm" action="/auth/login" method="post">
       <h1>Вход в админ-панель</h1>
+      <p style="text-align:center; font-size:15px; margin:5px 0 0;">Логин: student &nbsp; Пароль: test123</p>
 
       <label for="login">Логин</label>
-      <input id="login" name="Login" type="text" required>
+      <input id="login" name="login" type="text" required>
 
       <label for="password">Пароль</label>
-      <input id="password" name="Password" type="password" required>
+      <input id="password" name="password" type="password" required>
 
-      $if (${HasError})
-      <div class="error">${ErrorMessage}</div>
-      $endif
+      <div id="error" class="error" style="display:none"></div>
 
       <button class="btn" type="submit">Войти</button>
       <a class="back" href="/">← Вернуться на сайт</a>
     </form>
   </div>
+<script>
+(function(){
+  const form = document.getElementById('loginForm');
+  const errorEl = document.getElementById('error');
+  // если уже авторизован — сразу на главную
+  fetch('/auth/status', {credentials:'same-origin'}).then(r=>r.json()).then(j=>{
+    const isAuth = j.IsAuthenticated ?? j.isAuthenticated ?? false;
+    if(isAuth) location.href='/';
+  }).catch(()=>{});
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    errorEl.style.display='none';
+    const login = document.getElementById('login').value;
+    const password = document.getElementById('password').value;
+    const body = 'login='+encodeURIComponent(login)+'&password='+encodeURIComponent(password);
+    try{
+      const res = await fetch('/auth/login', {
+        method:'POST',
+        headers:{'Content-Type':'application/x-www-form-urlencoded'},
+        body: body,
+        credentials:'same-origin'
+      });
+      const data = await res.json().catch(()=>({}));
+      if(res.ok && (data.Success || data.success)){
+        location.href='/';
+      } else {
+        const msg = data.Message || data.message || 'Неверный логин или пароль';
+        errorEl.textContent = msg;
+        errorEl.style.display='block';
+      }
+    }catch(err){
+      errorEl.textContent='Ошибка соединения';
+      errorEl.style.display='block';
+    }
+  });
+})();
+</script>
 </body>
 </html>

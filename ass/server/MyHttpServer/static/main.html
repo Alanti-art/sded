@@ -288,5 +288,34 @@
       <a href="#top">Наверх ↑</a>
     </div>
   </div>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5c640960b07f13d',t:'MTc5NDk5NzMyOA=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5c640960b07f13d',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>
+(function(){
+  async function updateAuth(){
+    try{
+      const r = await fetch('/auth/status', {credentials:'same-origin'});
+      const j = await r.json();
+      const isAuth = j.IsAuthenticated ?? j.isAuthenticated ?? false;
+      const link = document.querySelector('.login-link');
+      if(link){
+        if(isAuth){
+          link.textContent='Выйти';
+          link.href='#';
+          link.onclick = async (e)=>{
+            e.preventDefault();
+            await fetch('/auth/logout', {method:'POST', credentials:'same-origin'});
+            document.cookie='sessionId=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0';
+            location.reload();
+          };
+        } else {
+          link.textContent='Войти';
+          link.href='/auth/login';
+          link.onclick=null;
+        }
+      }
+    }catch(e){}
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', updateAuth);
+  else updateAuth();
+})();
+</script></body>
 </html>

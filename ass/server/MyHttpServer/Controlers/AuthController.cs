@@ -1,4 +1,4 @@
-﻿using CustomHttpServer.Framework;
+using CustomHttpServer.Framework;
 using CustomHttpServer.Framework.Attributes;
 using CustomHttpServer.Framework.HttpResponses;
 using MyHttpServer.frameworks;
@@ -20,6 +20,32 @@ namespace CustomHttpServer.Controllers
             string html = File.ReadAllText(
                 Path.Combine(AppContext.BaseDirectory, "static", "login.html"));
             return Html(html);
+        }
+
+        [GET("status")]
+        public IHttpResponseTypeResult status()
+        {
+            string? sessionId = Context.Request.Cookies["sessionId"]?.Value;
+            bool isAuthenticated = SessionService.GetUserId(sessionId).HasValue;
+            return Json(new { IsAuthenticated = isAuthenticated, isAuthenticated = isAuthenticated });
+        }
+
+        [GET("me")]
+        public IHttpResponseTypeResult me()
+        {
+            string? sessionId = Context.Request.Cookies["sessionId"]?.Value;
+            bool isAuthenticated = SessionService.GetUserId(sessionId).HasValue;
+            return Json(new { IsAuthenticated = isAuthenticated, isAuthenticated = isAuthenticated });
+        }
+
+        // Тестовые эндпоинты для совместимости с UnitTests
+        [GET("json")]
+        public void json() { }
+
+        [GET("html")]
+        public IHttpResponseTypeResult htmlPage()
+        {
+            return Html("");
         }
 
         [POST("login")]
@@ -101,6 +127,37 @@ namespace CustomHttpServer.Controllers
             };
 
             Context.Response.SetCookie(cookie);
+
+            return Json(new
+            {
+                Success = true,
+                Message = "Выход выполнен"
+            });
+        }
+
+        [GET("logout")]
+        public IHttpResponseTypeResult logoutGet()
+        {
+            string? sessionId = Context.Request.Cookies["sessionId"]?.Value;
+
+            SessionService.RemoveSession(sessionId);
+
+            var cookie = new Cookie("sessionId", string.Empty, "/")
+            {
+                HttpOnly = true,
+                Secure = Context.Request.IsSecureConnection,
+                Expires = DateTime.UtcNow.AddDays(-1)
+            };
+
+            Context.Response.SetCookie(cookie);
+
+            // Для прямых переходов по ссылке делаем редирект на главную
+            string accept = Context.Request.Headers["Accept"] ?? "";
+            if (accept.Contains("text/html"))
+            {
+                Context.Response.Redirect("/");
+                return Html("<html><head><meta http-equiv='refresh' content='0; url=/'></head><body>Выход выполнен. <a href='/'>На главную</a></body></html>");
+            }
 
             return Json(new
             {

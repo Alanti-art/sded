@@ -98,15 +98,15 @@
     <div class="header">
       <a class="logo" href="/">♛ Переворот</a>
       <div class="navigation">
-        <a href="/admin/cards">Карточки</a>
-        <a href="/admin/logout">Выйти</a>
+        <a href="/cards.html">Карточки</a>
+        <a href="#" id="logout-link">Выйти</a>
       </div>
     </div>
 
     <div class="container">
       <h1>Управление карточками</h1>
       <p class="intro">Всего карточек: ${CardsCount}</p>
-      <a class="btn" href="/admin/cards/new">+ Добавить карточку</a>
+      <a class="btn" href="/add-card.html">+ Добавить карточку</a>
 
       <div class="cards">
 $foreach(card in Cards)
@@ -117,7 +117,7 @@ $foreach(card in Cards)
             <p class="card-description">${card.Description}</p>
           </div>
           <div class="card-actions">
-            <a class="btn" href="/admin/cards/edit?id=${card.Id}">Изменить</a>
+            <a class="btn" href="/edit-card.html?id=${card.Id}">Изменить</a>
             <form action="/admin/cards/delete" method="post">
               <input type="hidden" name="Id" value="${card.Id}">
               <button class="btn btn-delete" type="submit">Удалить</button>
@@ -130,5 +130,35 @@ $endforeach
 
     <div class="footer">♛ Админ-панель игры «Переворот»</div>
   </div>
+
+<script>
+(function(){
+  async function check(){
+    try{
+      const r = await fetch('/auth/status', {credentials:'same-origin'});
+      const j = await r.json();
+      const isAuth = j.IsAuthenticated ?? j.isAuthenticated ?? false;
+      if(!isAuth){
+        location.href='/auth/login';
+        return;
+      }
+      // настроить кнопку выйти
+      const logout = document.getElementById('logout-link');
+      if(logout){
+        logout.textContent='Выйти';
+        logout.onclick = async (e)=>{
+          e.preventDefault();
+          await fetch('/auth/logout', {method:'POST', credentials:'same-origin'});
+          document.cookie='sessionId=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0';
+          location.href='/';
+        };
+      }
+    }catch(e){}
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', check);
+  else check();
+})();
+</script>
+
 </body>
 </html>

@@ -1,4 +1,4 @@
-﻿using CustomHttpServer.Framework.Handlers;
+using CustomHttpServer.Framework.Handlers;
 using MyHttpServer.frameworks.Authentication;
 using MyHttpServer.frameworks.Handlers;
 using MyHttpServer.frameworks.Новая_папка;
@@ -104,7 +104,7 @@ namespace MyHttpServer.frameworks.core
         }
         private async Task ProcessRequestAsync(HttpListenerContext context)
         {
-            Handler staticFileHandler = new StaticFileHandler();
+            Handler staticFileHandler = new StaticFileHandler(sessionService);
             Handler controllerHandler = new ControllerHandler(sessionService);
 
              
