@@ -130,34 +130,24 @@
     \
 
 <script>
-(function(){
-  async function updateAuth(){
-    try{
-      const r = await fetch('/auth/status', {credentials:'same-origin'});
-      const j = await r.json();
-      const isAuth = j.IsAuthenticated ?? j.isAuthenticated ?? false;
-      const link = document.querySelector('.login-link');
-      if(link){
-        if(isAuth){
-          link.textContent='Выйти';
-          link.href='#';
-          link.onclick = async (e)=>{
-            e.preventDefault();
-            await fetch('/auth/logout', {method:'POST', credentials:'same-origin'});
-            document.cookie='sessionId=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0';
-            location.reload();
-          };
-        } else {
-          link.textContent='Войти';
-          link.href='/auth/login';
-        }
-      }
-      document.querySelectorAll('[data-auth-only]').forEach(el=>{el.style.display=isAuth?'':'none'});
-    }catch(e){}
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', updateAuth);
-  else updateAuth();
-})();
+fetch('/auth/status')
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    var isAuth = data.IsAuthenticated || data.isAuthenticated;
+    var btn = document.querySelector('.login-link');
+    if (!btn) return;
+    if (isAuth) {
+      btn.textContent = 'Выйти';
+      btn.href = '#';
+      btn.onclick = function(e){
+        e.preventDefault();
+        fetch('/auth/logout', {method: 'POST'}).then(function(){ location.reload(); });
+      };
+    } else {
+      btn.textContent = 'Войти';
+      btn.href = '/auth/login';
+    }
+  });
 </script>
 
 </body>

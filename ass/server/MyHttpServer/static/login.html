@@ -118,41 +118,44 @@
     </form>
   </div>
 <script>
-(function(){
-  const form = document.getElementById('loginForm');
-  const errorEl = document.getElementById('error');
-  // если уже авторизован — сразу на главную
-  fetch('/auth/status', {credentials:'same-origin'}).then(r=>r.json()).then(j=>{
-    const isAuth = j.IsAuthenticated ?? j.isAuthenticated ?? false;
-    if(isAuth) location.href='/';
-  }).catch(()=>{});
-  form.addEventListener('submit', async (e)=>{
-    e.preventDefault();
-    errorEl.style.display='none';
-    const login = document.getElementById('login').value;
-    const password = document.getElementById('password').value;
-    const body = 'login='+encodeURIComponent(login)+'&password='+encodeURIComponent(password);
-    try{
-      const res = await fetch('/auth/login', {
-        method:'POST',
-        headers:{'Content-Type':'application/x-www-form-urlencoded'},
-        body: body,
-        credentials:'same-origin'
-      });
-      const data = await res.json().catch(()=>({}));
-      if(res.ok && (data.Success || data.success)){
-        location.href='/';
+// Очень простой код для джуна
+var form = document.getElementById('loginForm');
+var errorBox = document.getElementById('error');
+
+// если уже вошел - сразу на главную
+fetch('/auth/status').then(function(r){ return r.json(); }).then(function(d){
+  if (d.IsAuthenticated || d.isAuthenticated) {
+    location.href = '/';
+  }
+});
+
+form.onsubmit = function(e) {
+  e.preventDefault();
+  errorBox.style.display = 'none';
+
+  var login = document.getElementById('login').value;
+  var password = document.getElementById('password').value;
+  var body = 'login=' + encodeURIComponent(login) + '&password=' + encodeURIComponent(password);
+
+  fetch('/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: body
+  }).then(function(res){
+    return res.json().then(function(data){
+      if (res.ok && (data.Success || data.success)) {
+        // все ок - идем на главную
+        location.href = '/';
       } else {
-        const msg = data.Message || data.message || 'Неверный логин или пароль';
-        errorEl.textContent = msg;
-        errorEl.style.display='block';
+        errorBox.textContent = data.Message || data.message || 'Неверный логин или пароль';
+        errorBox.style.display = 'block';
       }
-    }catch(err){
-      errorEl.textContent='Ошибка соединения';
-      errorEl.style.display='block';
-    }
+    });
+  }).catch(function(){
+    errorBox.textContent = 'Ошибка соединения';
+    errorBox.style.display = 'block';
   });
-})();
+};
 </script>
 </body>
 </html>

@@ -132,32 +132,23 @@ $endforeach
   </div>
 
 <script>
-(function(){
-  async function check(){
-    try{
-      const r = await fetch('/auth/status', {credentials:'same-origin'});
-      const j = await r.json();
-      const isAuth = j.IsAuthenticated ?? j.isAuthenticated ?? false;
-      if(!isAuth){
-        location.href='/auth/login';
-        return;
-      }
-      // настроить кнопку выйти
-      const logout = document.getElementById('logout-link');
-      if(logout){
-        logout.textContent='Выйти';
-        logout.onclick = async (e)=>{
-          e.preventDefault();
-          await fetch('/auth/logout', {method:'POST', credentials:'same-origin'});
-          document.cookie='sessionId=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0';
-          location.href='/';
-        };
-      }
-    }catch(e){}
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', check);
-  else check();
-})();
+// На этой странице должны быть только залогиненые
+fetch('/auth/status')
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    var isAuth = data.IsAuthenticated || data.isAuthenticated;
+    if (!isAuth) {
+      location.href = '/auth/login';
+      return;
+    }
+    var logout = document.getElementById('logout-link');
+    if (logout) {
+      logout.onclick = function(e){
+        e.preventDefault();
+        fetch('/auth/logout', {method: 'POST'}).then(function(){ location.href = '/'; });
+      };
+    }
+  });
 </script>
 
 </body>
