@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Переворот — настольная игра о блефе</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 18px;
+      line-height: 1.5;
+      background: #070F08;
+      color: #B6A8A2;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -40px;
+      z-index: -1;
+      background: url("https://filgroup.ru/wp-content/uploads/2024/07/22.-Perevorot.webp") center / cover;
+      filter: blur(14px) brightness(0.3);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      max-width: 760px;
+      min-height: 100vh;
+      margin: 0 auto;
+      background: #090c0c;
+    }
+
+    .header {
+      padding: 14px 28px;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #7A4A3C;
+    }
+
+    .logo {
+      color: #D8CCC6;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .navigation a {
+      margin-left: 20px;
+    }
+
+    .navigation .login-link {
+      padding: 4px 12px;
+      border: 1px solid #7A4A3C;
+      border-radius: 999px;
+    }
+
+    .navigation a:hover {
+      color: #D8CCC6;
+    }
+
+    .container {
+      padding: 20px 28px 50px;
+    }
+
+    .block {
+      margin-top: 50px;
+    }
+
+    .block-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 22px;
+      color: #D8CCC6;
+      font-size: 24px;
+    }
+
+    .block-title::after {
+      content: "";
+      flex: 1;
+      border-top: 2px dotted #7A4A3C;
+    }
+
+    .footer {
+      padding: 26px 28px;
+      border-top: 1px solid #7A4A3C;
+      font-size: 15px;
+      text-align: center;
+    }
+
+    .footer a {
+      color: #D8CCC6;
+    }
+
+
+    .hero {
+      text-align: center;
+    }
+
+    .hero-image {
+      display: block;
+      width: 100%;
+      height: 340px;
+      object-fit: cover;
+      opacity: 0.6;
+    }
+
+    .hero-content {
+      margin-top: -40px;
+      padding: 0 28px;
+    }
+
+    .hero-title {
+      margin: 0;
+      color: #D8CCC6;
+      font-size: 69px;
+      letter-spacing: 3px;
+    }
+
+    .hero-subtitle {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .hero-text {
+      max-width: 520px;
+      margin: 16px auto 0;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 8px 26px;
+      border: 1px solid #D8CCC6;
+      border-radius: 999px;
+      color: #D8CCC6;
+      font-weight: bold;
+    }
+
+    .btn:hover {
+      color: #090c0c;
+      background: #D8CCC6;
+    }
+
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .fact {
+      padding: 14px 10px;
+      border: 1px solid #7A4A3C;
+      border-radius: 80px 80px 14px 14px;
+      text-align: center;
+    }
+
+    .fact-icon {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 8px;
+      border: 1px solid #7A4A3C;
+      border-radius: 50%;
+      font-size: 26px;
+      line-height: 54px;
+    }
+
+    .fact-name {
+      color: #D8CCC6;
+      font-size: 16px;
+      line-height: 1.2;
+    }
+
+    .fact-value {
+      color: #D8CCC6;
+      font-weight: bold;
+    }
+
+    .rule {
+      margin-bottom: 16px;
+      padding-left: 14px;
+      border-left: 1px solid #7A4A3C;
+    }
+
+    .rule-title {
+      color: #D8CCC6;
+      font-weight: bold;
+    }
+
+    .important {
+      margin-top: 24px;
+      padding: 14px 18px;
+      border: 1px solid #7A4A3C;
+      border-radius: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page" id="top">
+    <div class="header">
+      <a class="logo" href="#top">♛ Переворот</a>
+      <div class="navigation">
+        <a href="#rules">Правила</a>
+        <a href="/characters/list">Карточки</a>
+        <a class="login-link" href="/auth/login">Войти</a>
+      </div>
+    </div>
+
+    <div class="hero">
+      <img class="hero-image" src="https://filgroup.ru/wp-content/uploads/2024/07/22.-Perevorot.webp" alt="Настольная игра Переворот">
+
+      <div class="hero-content">
+        <h1 class="hero-title">Переворот</h1>
+        <p class="hero-subtitle">Настольная игра о блефе и интригах</p>
+        <p class="hero-text">Быстрая карточная игра, где важно не только иметь сильных персонажей, но и уметь убедительно блефовать.</p>
+        <a href="/characters/list" class="btn">Персонажи</a>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="facts">
+        <div class="fact">
+          <div class="fact-icon">👥</div>
+          <div class="fact-name">Количество игроков</div>
+          <div class="fact-value">4–6</div>
+        </div>
+        <div class="fact" style="margin-top: 26px;">
+          <div class="fact-icon">⏱️</div>
+          <div class="fact-name">Время партии</div>
+          <div class="fact-value">15 минут</div>
+        </div>
+        <div class="fact">
+          <div class="fact-icon">🎂</div>
+          <div class="fact-name">Возраст</div>
+          <div class="fact-value">10+</div>
+        </div>
+        <div class="fact" style="margin-top: 26px;">
+          <div class="fact-icon">🃏</div>
+          <div class="fact-name">Жанр</div>
+          <div class="fact-value">Блеф и дедукция</div>
+        </div>
+      </div>
+
+      <div class="block" id="rules">
+        <h2 class="block-title">Как играть</h2>
+
+        <div class="rule">
+          <span class="rule-title">1. Подготовка.</span>
+          Каждый игрок получает две закрытые карты персонажей и две монеты. Свои карты можно посмотреть, но нельзя показывать соперникам.
+        </div>
+        <div class="rule">
+          <span class="rule-title">2. Ход игрока.</span>
+          В свой ход игрок выбирает одно действие: получает доход, просит иностранную помощь, совершает переворот или использует способность персонажа.
+        </div>
+        <div class="rule">
+          <span class="rule-title">3. Блеф.</span>
+          Можно объявить способность любого персонажа, даже если такой карты у вас нет. Другой игрок может оспорить ваше заявление.
+        </div>
+        <div class="rule">
+          <span class="rule-title">4. Потеря влияния.</span>
+          Если игрок проиграл спор или стал целью действия, он открывает одну из своих карт. Открытая карта выходит из игры.
+        </div>
+        <div class="rule">
+          <span class="rule-title">5. Победа.</span>
+          Когда игрок открывает обе карты, он выбывает. Побеждает последний игрок, у которого осталась хотя бы одна закрытая карта.
+        </div>
+
+        <div class="important">
+          <strong>Важно:</strong> если у игрока накопилось 10 или больше монет, он обязан совершить «Переворот» в свой ход.
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div>♛ Переворот — неофициальная страница настольной игры.</div>
+      <a href="#top">Наверх ↑</a>
+    </div>
+  </div>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5c640960b07f13d',t:'MTc5NDk5NzMyOA=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5c640960b07f13d',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
