@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace MyHttpServer
@@ -14,6 +15,6 @@ namespace MyHttpServer
         public string Path { get; set; }  /*= "connection";*/
 
         public string ConnectionString { get; set; }
-
+        
     }
 }

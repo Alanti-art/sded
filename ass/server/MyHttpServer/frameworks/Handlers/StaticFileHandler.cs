@@ -1,4 +1,4 @@
-﻿using CustomHttpServer.Framework.Handlers;
+using CustomHttpServer.Framework.Handlers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,4 +1,4 @@
-﻿using MyHttpServer.frameworks.Authentication;
+using MyHttpServer.frameworks.Authentication;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

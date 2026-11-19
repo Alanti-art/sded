@@ -370,20 +370,22 @@
                     <button class="btn" type="submit">Добавить комментарий</button>
                 </form>
 
-                {% if comments %}
-                {% for c in comments %}
-                <div class="comment">
-                    <div class="comment-head">
-                        <span>{{ c.name }}</span>
-                        {% if c.rating %}<span class="comment-rating">★ {{ c.rating }}</span>{% endif %}
-                        <span class="comment-date">{{ c.created_at }}</span>
+                <div id="comments-list">
+                    $if (${HasComments})
+                    $foreach (c in Comments)
+                    <div class="comment">
+                        <div class="comment-head">
+                            <span>${c.name}</span>
+                            $if (${c.HasRating})<span class="comment-rating">★ ${c.rating}</span>$endif
+                            <span class="comment-date">${c.created_at}</span>
+                        </div>
+                        <div class="comment-text">${c.text}</div>
                     </div>
-                    <div class="comment-text">{{ c.text }}</div>
+                    $endforeach
+                    $else
+                    <p class="comments-empty">Пока нет комментариев. Станьте первым!</p>
+                    $endif
                 </div>
-                {% endfor %}
-                {% else %}
-                <p class="comments-empty">Пока нет комментариев. Станьте первым!</p>
-                {% endif %}
             </div>
         </div>
 
@@ -392,5 +394,33 @@
             <a href="#top">Наверх ↑</a>
         </div>
     </div>
+
+    <script>
+        function loadComments() {
+            fetch('/comment/comments')
+                .then(response => response.json())
+                .then(comments => {
+                    const list = document.getElementById('comments-list');
+                    if (!list) return;
+                    if (!comments || comments.length === 0) {
+                        list.innerHTML = '<p class="comments-empty">Пока нет комментариев. Станьте первым!</p>';
+                        return;
+                    }
+                    list.innerHTML = comments.map(comment => `
+                        <div class="comment">
+                            <div class="comment-head">
+                                <span>${comment.name}</span>
+                                ${comment.rating ? '<span class="comment-rating">★ ' + comment.rating + '</span>' : ''}
+                                <span class="comment-date">${comment.created_at}</span>
+                            </div>
+                            <div class="comment-text">${comment.text}</div>
+                        </div>
+                    `).join('');
+                })
+                .catch(error => console.log('Не удалось загрузить комментарии:', error));
+        }
+
+        loadComments();
+    </script>
 </body>
 </html>

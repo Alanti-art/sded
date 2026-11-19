@@ -16,7 +16,9 @@ namespace ConsoleApp
     {
         public string RenderFromFile(string filePath, object dataModel)
         {
-            throw new NotImplementedException();
+            string template = File.ReadAllText(filePath, Encoding.UTF8);
+            return RenderFromString(template, dataModel);
+
         }
 
         public string RenderFromString(string htmlTemplate, object dataModel)

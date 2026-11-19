@@ -1,4 +1,5 @@
-﻿using CustomHttpServer.Framework;
+using ConsoleApp;
+using CustomHttpServer.Framework;
 using CustomHttpServer.Framework.Attributes;
 using CustomHttpServer.Framework.HttpResponses;
 using MyHttpServer.frameworks;
@@ -14,12 +15,13 @@ namespace CustomHttpServer.Controllers
     [HttpController("auth")]
     public class AuthController : ControllerBase
     {
+        private static readonly IHtmlTemplateRenderer Renderer = new HtmlTemplateRenderer();
+
         [GET("login")]
         public IHttpResponseTypeResult login()
         {
-            string html = File.ReadAllText(
-                Path.Combine(AppContext.BaseDirectory, "static", "login.html"));
-            return Html(html);
+
+            return RenderLoginPage();
         }
 
         [POST("login")]
@@ -27,12 +29,15 @@ namespace CustomHttpServer.Controllers
         {
             Console.WriteLine($"Получен login: {login}; пароль {password}.");
 
-            const string testLogin = "student";
-            const string testPassword = "test123";
+            const string testLogin = "admin";
+            const string testPassword = "admin123";
 
             if (login != testLogin || password != testPassword)
             {
-                return new JsonResult(new { Success = false, Message = "Неверный логин или пароль" }, 401);
+                return RenderLoginPage(
+                    hasError: true,
+                    errorMessage: "Неверный логин или пароль",
+                    login: login ?? string.Empty);
             }
 
             int userId = 1;
@@ -48,44 +53,14 @@ namespace CustomHttpServer.Controllers
 
             Context.Response.SetCookie(cookie);
 
-            return Json(new
-            {
-                Success = true,
-                Message = "Вход выполнен"
-            });
+
+            string html = File.ReadAllText(
+                Path.Combine(AppContext.BaseDirectory, "static", "cards.html"));
+
+            return Html(html);
         }
 
         
-        //[POST("login")]
-        //public IHttpResponseTypeResult Login(string login, string password)
-        //{
-        //    const string testLogin = "student";
-        //    const string testPassword = "test123";
-
-        //    if (login != testLogin || password != testPassword)
-        //    {
-        //        return new JsonResult( new{Success = false, Message = "Неверный логин или пароль"}, 401);
-        //    }
-
-        //    int userId = 1;
-
-        //    string sessionId = SessionService.CreateSession(userId);
-
-        //    var cookie = new Cookie( "sessionId",sessionId,"/")
-        //    {
-        //        HttpOnly = true,
-        //        Secure = Context.Request.IsSecureConnection,
-        //        Expires = DateTime.UtcNow.AddMinutes(30)
-        //    };
-
-        //    Context.Response.SetCookie(cookie);
-
-        //    return Json(new
-        //    {
-        //        Success = true,
-        //        Message = "Вход выполнен"
-        //    });
-        //}
         [POST("logout")]
         public IHttpResponseTypeResult Logout()
         {
@@ -108,6 +83,24 @@ namespace CustomHttpServer.Controllers
                 Message = "Выход выполнен"
             });
         }
+
+        private IHttpResponseTypeResult RenderLoginPage(
+           bool hasError = false,
+           string errorMessage = "",
+           string login = "")
+        {
+            string html = Renderer.RenderFromFile(
+                Path.Combine(AppContext.BaseDirectory, "static", "login.html"),
+                new 
+                {
+                    HasError = hasError,
+                    ErrorMessage = WebUtility.HtmlEncode(errorMessage ?? string.Empty),
+                    Login = WebUtility.HtmlEncode(login ?? string.Empty)
+                });
+
+            return Html(html);
+        }
+      
 
 
     }

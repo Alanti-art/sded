@@ -1,4 +1,4 @@
-﻿using CustomHttpServer.Framework.Attributes;
+using CustomHttpServer.Framework.Attributes;
 using CustomHttpServer.Framework.Handlers;
 using MyHttpServer.frameworks.Authentication;
 using MyHttpServer.frameworks.HttpResponses;
@@ -49,9 +49,7 @@ namespace MyHttpServer.frameworks.Handlers
 
                 if (urlParts.Length < 1)
                 {
-                    response.StatusCode = 400;
-                    response.Close();
-                    return;
+                    urlParts = new[] { "home", "" }; ;
                 }
 
                 string controllerRoute = urlParts[0];

@@ -1,4 +1,4 @@
-﻿using CustomHttpServer.Framework.HttpResponses;
+using CustomHttpServer.Framework.HttpResponses;
 using CustomHttpServer.Framework.HttpResponses;
 using MyHttpServer.frameworks.Authentication;
 using MyHttpServer.frameworks.HttpResponses;

@@ -1,4 +1,4 @@
-﻿using CustomHttpServer.Framework.Handlers;
+using CustomHttpServer.Framework.Handlers;
 using MyHttpServer.frameworks.Authentication;
 using MyHttpServer.frameworks.Handlers;
 using MyHttpServer.frameworks.Новая_папка;

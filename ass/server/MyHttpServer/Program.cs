@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Security;
 using System.Reflection.Metadata;
 using System.Text;
@@ -18,7 +18,7 @@ namespace MyHttpServer
             HttpServer.whileServer(command);
         }
        
-            
+        
      
     }
 }
